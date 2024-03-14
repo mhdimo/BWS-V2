@@ -4,6 +4,7 @@ BWS-V2 is a emulation of a reworked formula of the main BWS formula widely used 
 Made in C++ without any specific crazy library
 
 # to run
+on the `src` folder:
 ```bash
 g++ main.cpp Date.cpp -o BWS_parser
 ```
