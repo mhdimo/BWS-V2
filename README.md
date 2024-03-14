@@ -1,7 +1,7 @@
 # BWS-V2
-BWS-V2 is a emulation of a reworked formula of the main BWS formula widely used in osu! by taking in account the "age" of a badge.
+BWS-V2 is a emulation of a reworked formula of the main BWS formula widely used in osu! by taking in account the "age" of a badge and put a ```weight``` on it.
 
-Made in C++ without any specific crazy library
+Made in C++ with standard libraries.
 
 # to run
 on the `src` folder:
