@@ -2,13 +2,14 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <iostream>
 
 std::vector<Player> parsePlayerData(const std::string& filename) {
     std::vector<Player> players;
 
     std::ifstream file(filename);
     if (!file.is_open()) {
-        throw std::runtime_error("Impossibile aprire il file: " + filename);
+        throw std::runtime_error("Error: Unable to open file: " + filename);
     }
 
     std::string line;
@@ -28,8 +29,13 @@ std::vector<Player> parsePlayerData(const std::string& filename) {
             std::string badgeDateStr;
             std::getline(iss, badgeDateStr, ';');
 
-            Date badgeDate = convertStringToDate(badgeDateStr);
-            player.addBadgeDate(badgeDate);
+            try {
+                Date badgeDate = convertStringToDate(badgeDateStr);
+                player.addBadgeDate(badgeDate);
+            } catch (const std::exception& e) {
+                std::cerr << "Error: Invalid date format for player " << username << ": " << badgeDateStr << std::endl;
+                continue;
+            }
         }
 
         players.push_back(player);
@@ -47,7 +53,7 @@ Date convertStringToDate(const std::string& dateStr) {
     ss >> day >> delimiter >> month >> delimiter >> year;
 
     if (ss.fail() || delimiter != '-' || day < 1 || day > 31 || month < 1 || month > 12 || year < 0) {
-        throw std::runtime_error("Errore nella conversione della data: " + dateStr);
+        throw std::runtime_error("Error: Invalid date format: " + dateStr);
     }
 
     return Date(day, month, year);
