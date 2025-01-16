@@ -6,6 +6,7 @@
 #include "MathUtils.cpp" // Include mathematical functions for the BWS-V2
 #include "Player.cpp" // Include player Class
 #include "Parser.cpp" // Include functions and business logic for data parsing
+#include "Date.cpp" // Include Date class implementation
 
 int main() {
     std::string filename = "player_data.txt"; // Nome del file dei dati giocatori
