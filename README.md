@@ -6,7 +6,7 @@ Made in C++ with standard libraries.
 # to run
 on the `src` folder:
 ```bash
-g++ main.cpp Date.cpp -o BWS_parser
+g++ main.cpp -o BWS_parser
 ```
 # Parsing file format
 
