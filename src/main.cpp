@@ -7,7 +7,7 @@
 #include "Player.cpp" // Include player Class
 #include "Parser.cpp" // Include functions and business logic for data parsing
 #include "Date.cpp" // Include Date class implementation
-#include "WeightGenerator.hpp" // Include WeightGenerator class
+#include "../include/WeightGenerator.hpp" // Include WeightGenerator class
 
 int main() {
     std::string filename = "player_data.txt"; // Nome del file dei dati giocatori
