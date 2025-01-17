@@ -7,10 +7,10 @@
 #include "Player.cpp" // Include player Class
 #include "Parser.cpp" // Include functions and business logic for data parsing
 #include "Date.cpp" // Include Date class implementation
-#include "../include/WeightGenerator.hpp" // Include WeightGenerator class
+#include "WeightGenerator.cpp" // Include WeightGenerator class
 
 int main() {
-    std::string filename = "player_data.txt"; // Nome del file dei dati giocatori
+    std::string filename = "player_data.txt"; // filename with player data
 
     WeightGenerator weightGenerator;
     weightGenerator.loadCache("weight_cache.txt");
@@ -34,7 +34,7 @@ int main() {
 
         std::ofstream outputFile("results.txt");
         if (!outputFile.is_open()) {
-            std::cerr << "Impossibile creare il file di output!" << std::endl;
+            std::cerr << "Error: Unable to open file" << std::endl;
             return 1;
         }
 
@@ -49,7 +49,7 @@ int main() {
 
         weightGenerator.saveCache("weight_cache.txt");
     } catch (const std::exception& e) {
-        std::cerr << "Errore: " << e.what() << std::endl;
+        std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
 
