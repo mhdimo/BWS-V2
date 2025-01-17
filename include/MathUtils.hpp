@@ -1,6 +1,7 @@
 #ifndef MATHUTILS_HPP
 #define MATHUTILS_HPP
 #include <cmath>
+#include <vector>
 
 /**
  * @brief Calculates the BWS rank for a player based on their actual rank, number of badges, and the size of three date arrays.

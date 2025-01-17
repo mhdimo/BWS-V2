@@ -52,7 +52,7 @@ BWS-V2/
 To build the project, navigate to the `src` directory and compile the source files:
 ```
 cd src
-g++ main.cpp -o BWSV2
+g++ main.cpp DateUtils.cpp MathUtils.cpp Player.cpp Parser.cpp Date.cpp WeightGenerator.cpp -o BWSV2
 ```
 
 ### Running the Application

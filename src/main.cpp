@@ -2,12 +2,13 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "DateUtils.cpp" // Include function for the Date calculation
-#include "MathUtils.cpp" // Include mathematical functions for the BWS-V2
-#include "Player.cpp" // Include player Class
-#include "Parser.cpp" // Include functions and business logic for data parsing
-#include "Date.cpp" // Include Date class implementation
-#include "WeightGenerator.cpp" // Include WeightGenerator class
+#include "../include/DateUtils.hpp" // Include function for the Date calculation
+#include "../include/MathUtils.hpp" // Include mathematical functions for the BWS-V2
+#include "../include/Player.hpp" // Include player Class
+#include "../include/Parser.hpp" // Include functions and business logic for data parsing
+#include "../include/Date.hpp" // Include Date class implementation
+#include "../include/WeightGenerator.hpp" // Include WeightGenerator class
+
 
 int main() {
     std::string filename = "player_data.txt"; // filename with player data
