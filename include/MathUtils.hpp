@@ -13,4 +13,22 @@
  */
 int calculateBWSrank(int actualRank, int noBadges, int sizeofArrayN1, int sizeofArrayN2, int sizeofArrayN3);
 
+/**
+ * @brief Dynamically calculates weights based on the number of badges.
+ * @param noBadges The number of badges the player has.
+ * @return A vector of dynamically calculated weights.
+ */
+std::vector<double> calculateDynamicWeights(int noBadges);
+
+/**
+ * @brief Calculates the BWS rank for a player using dynamic weights.
+ * @param actualRank The actual rank of the player.
+ * @param noBadges The number of badges the player has.
+ * @param sizeofArrayN1 The size of the array containing dates within 0 to 6 months difference.
+ * @param sizeofArrayN2 The size of the array containing dates within 6 to 12 months difference.
+ * @param sizeofArrayN3 The size of the array containing dates with more than 12 months difference.
+ * @return The calculated BWS rank for the player using dynamic weights.
+ */
+int calculateBWSrankWithDynamicWeights(int actualRank, int noBadges, int sizeofArrayN1, int sizeofArrayN2, int sizeofArrayN3);
+
 #endif // MATHUTILS_HPP
