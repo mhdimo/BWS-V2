@@ -1,46 +1,82 @@
 # BWS-V2
-BWS-V2 is a emulation of a reworked formula of the main BWS expression that is widely used in osu! by taking in account the "age" of a badge and give it a floating number ```weight```.
 
-Made in C++ with standard libraries.
+## Overview
+BWS-V2 is a C++ application designed to calculate and predict player rankings based on their performance and how old is their badge. The application uses a neural network to dynamically generate weight predictions and store them in a cache for efficient data processing.
 
-# to run
-on the `src` folder:
-```bash
-g++ main.cpp -o BWS_parser
+## Features
+- **Player Data Parsing**: Reads player data from a file and parses it into structured objects.
+- **Date Utilities**: Provides functions to handle date calculations and manipulations.
+- **Neural Network**: Implements a simple neural network to predict weights based on player features.
+- **Dynamic Weight Calculation**: Calculates dynamic weights based on the number of badges a player has.
+- **Cache Mechanism**: Stores and loads weight predictions to and from a cache file for efficient processing.
+- **Unit Tests**: Comprehensive unit tests to ensure the correctness of the application.
+
+## File Structure
 ```
-# Parsing file format
-
-## THE FILE HAS TO BE CALLED `player_data.txt` OTHERWISE IT WON'T WORK
-example:
+BWS-V2/
+├── include/
+│   ├── Date.hpp
+│   ├── DateUtils.hpp
+│   ├── MathUtils.hpp
+│   ├── Parser.hpp
+│   ├── Player.hpp
+│   └── WeightGenerator.hpp
+├── src/
+│   ├── Date.cpp
+│   ├── DateUtils.cpp
+│   ├── MathUtils.cpp
+│   ├── Parser.cpp
+│   ├── Player.cpp
+│   ├── WeightGenerator.cpp
+│   ├── main.cpp
+│   ├── player_data.txt
+│   └── results.txt
+├── tests/
+│   ├── DateTests.cpp
+│   ├── DateUtilsTests.cpp
+│   ├── MathUtilsTests.cpp
+│   ├── ParserTests.cpp
+│   ├── PlayerTests.cpp
+│   └── WeightGeneratorTests.cpp
+└── README.md
 ```
-player1; ActualRank; NoBadges; dd1-mm1-yyyy1; dd2-mm2-yyyy2; ...; dd(n)-mm(n)-yyyy(n)
-player2; ActualRank; NoBadges; dd1-mm1-yyyy1; dd2-mm2-yyyy2; ...; dd(n)-mm(n)-yyyy(n)
-player3; ActualRank; NoBadges; dd1-mm1-yyyy1; dd2-mm2-yyyy2; ...; dd(n)-mm(n)-yyyy(n)
-player4; ActualRank; NoBadges; dd1-mm1-yyyy1; dd2-mm2-yyyy2; ...; dd(n)-mm(n)-yyyy(n)
-...........................................................................................
-playerN; ActualRank; NoBadges; dd1-mm1-yyyy1; dd2-mm2-yyyy2; ...; dd(n-1)-mm(n-1)-yyyy(n-1)
+
+## Getting Started
+
+### Prerequisites
+- C++ compiler (e.g., g++)
+- CMake (optional, for building the project)
+- Google Test (for running unit tests)
+
+### Building the Project
+To build the project, navigate to the `src` directory and compile the source files:
+```
+cd src
+g++ main.cpp -o BWSV2
 ```
 
-# Contribution
-I'm open to make a better version of this formula, please contact me on Twitter (@akahitooo) or osu (Akahito), or DM me on discord (akahito.)
+### Running the Application
+After building the project, you can run the application:
+```
+./BWSV2
+```
 
-# How to Contribute
-
-1. Fork the repository on GitHub.
-2. Clone your forked repository to your local machine.
-3. Create a new branch for your feature or bug fix.
-4. Make your changes and commit them with clear and descriptive commit messages.
-5. Push your changes to your forked repository.
-6. Create a pull request to the main repository, describing your changes in detail.
-
-# Running Tests
-
-To run the unit tests, use the following command in the `tests` folder:
-```bash
-g++ -o runTests DateTests.cpp DateUtilsTests.cpp MathUtilsTests.cpp ParserTests.cpp PlayerTests.cpp -I ../include
+### Running Unit Tests
+To run the unit tests, ensure you have Google Test installed and compile the test files:
+```
+cd tests
+g++ -std=c++11 -isystem /path/to/googletest/include -pthread DateTests.cpp DateUtilsTests.cpp MathUtilsTests.cpp ParserTests.cpp PlayerTests.cpp WeightGeneratorTests.cpp -o runTests -L /path/to/googletest/lib -lgtest -lgtest_main
 ./runTests
 ```
 
-# License
+## Usage
+1. Place the player data in `src/player_data.txt` in the specified format.
+2. Run the application to parse the data, calculate the BWS ranks, and save the results in `src/results.txt`.
+3. The application will also save the weight predictions in `weight_cache.txt` for future use.
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Authors
+
+[Mihal Dimo](https://github.com/mhdimo)
