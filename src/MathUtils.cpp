@@ -1,4 +1,5 @@
 #include "../include/MathUtils.hpp"
+#include "../include/WeightGenerator.hpp"
 #include <cmath>
 #include <vector>
 
@@ -13,19 +14,13 @@ int calculateBWSrank(int actualRank, int noBadges, int sizeofArrayN1, int sizeof
     return calculateBWSrankWithDynamicWeights(actualRank, noBadges, sizeofArrayN1, sizeofArrayN2, sizeofArrayN3);
 }
 
-std::vector<double> calculateDynamicWeights(int noBadges) {
-    std::vector<double> weights(3);
-    weights[0] = weight1 * (1 + noBadges * 0.1);
-    weights[1] = weight2 * (1 + noBadges * 0.1);
-    weights[2] = weight3 * (1 + noBadges * 0.1);
-    return weights;
-}
-
 int calculateBWSrankWithDynamicWeights(int actualRank, int noBadges, int sizeofArrayN1, int sizeofArrayN2, int sizeofArrayN3) {
     if (noBadges == 0) {
         return actualRank;
     } else {
-        std::vector<double> weights = calculateDynamicWeights(noBadges);
+        WeightGenerator weightGenerator;
+        std::vector<double> weights = weightGenerator.predict({static_cast<double>(noBadges), static_cast<double>(sizeofArrayN1), static_cast<double>(sizeofArrayN2), static_cast<double>(sizeofArrayN3)});
+        
         return pow(actualRank,
                    pow(const1, noBadges * (const2 + (
                            (sizeofArrayN1 * weights[0]) +
