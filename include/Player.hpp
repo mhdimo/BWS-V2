@@ -1,8 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include <string>
-#include <vector>
+#include "common.h"
 #include "Date.hpp"
 
 /**
@@ -39,9 +38,9 @@ public:
 
     /**
      * @brief Gets the badge dates of the player.
-     * @return A vector of Date objects representing the badge dates of the player.
+     * @return A const reference to a vector of Date objects representing the badge dates of the player.
      */
-    std::vector<Date> getBadgeDates() const;
+    const std::vector<Date>& getBadgeDates() const;
 
     /**
      * @brief Adds a badge date to the player's badge dates.
@@ -59,14 +58,14 @@ public:
      * @brief Gets the BWS rank of the player.
      * @return The BWS rank of the player.
      */
-    long getBWSRank() const;
+    double getBWSRank() const;
 
 private:
     std::string username;
     long actualRank;
     int numBadges;
     std::vector<Date> badgeDates;
-    long bwsRank;
+    double bwsRank;
 };
 
 #endif // PLAYER_HPP
