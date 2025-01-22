@@ -15,18 +15,18 @@ int Player::getNumBadges() const {
     return numBadges;
 }
 
-std::vector<Date> Player::getBadgeDates() const {
+const std::vector<Date>& Player::getBadgeDates() const {
     return badgeDates;
 }
 
 void Player::addBadgeDate(const Date& date) {
-    badgeDates.push_back(date);
+    badgeDates.push_back(std::move(date));
 }
 
 void Player::setBWSRank(double bwsRank) {
     this->bwsRank = bwsRank;
 }
 
-long Player::getBWSRank() const {
+double Player::getBWSRank() const {
     return bwsRank;
 }
