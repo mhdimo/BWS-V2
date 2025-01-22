@@ -9,10 +9,77 @@
 #include "../include/Date.hpp"
 #include "../include/WeightGenerator.hpp"
 
+void prepareTrainingData(const std::vector<Player>& players, std::vector<std::vector<double>>& trainingData) {
+    for (const Player& player : players) {
+        std::vector<Date> arrayN1, arrayN2, arrayN3;
+        splitDateArrays(player.getBadgeDates(), arrayN1, arrayN2, arrayN3);
+
+        // Prepare feature vector for training
+        std::vector<double> features = {
+            static_cast<double>(player.getNumBadges()),
+            static_cast<double>(arrayN1.size()),
+            static_cast<double>(arrayN2.size()),
+            static_cast<double>(arrayN3.size()),
+            static_cast<double>(player.getActualRank()) // Add actual rank as target
+        };
+
+        trainingData.push_back(features);
+    }
+}
+
+void updatePlayerBWSRank(std::vector<Player>& players, WeightGenerator& weightGenerator) {
+    for (Player& player : players) {
+        std::vector<Date> arrayN1, arrayN2, arrayN3;
+        splitDateArrays(player.getBadgeDates(), arrayN1, arrayN2, arrayN3);
+
+        // Prepare feature vector for prediction
+        std::vector<double> features = {
+            static_cast<double>(player.getNumBadges()),
+            static_cast<double>(arrayN1.size()),
+            static_cast<double>(arrayN2.size()),
+            static_cast<double>(arrayN3.size())
+        };
+
+        // Get dynamic weights using the predict method
+        std::vector<double> dynamicWeights = weightGenerator.predict(player.getUsername(), features);
+
+        // Calculate BWS rank with dynamic weights
+        double bwsRank = calculateBWSrankWithDynamicWeights(
+            player.getActualRank(),
+            player.getNumBadges(),
+            arrayN1.size(),
+            arrayN2.size(),
+            arrayN3.size(),
+            dynamicWeights
+        );
+
+        player.setBWSRank(bwsRank);
+
+        // Update cache with the new dynamic weights
+        weightGenerator.addToCache(player.getUsername(), dynamicWeights);
+    }
+}
+
+void writeResults(const std::vector<Player>& players) {
+    std::ofstream outputFile("results.txt", std::ios::app);
+    if (!outputFile.is_open()) {
+        throw std::runtime_error("Unable to open results file");
+    }
+
+    for (const auto& player : players) {
+        outputFile << "Username: " << player.getUsername() << std::endl;
+        outputFile << "New BWS Rank: " << player.getBWSRank() << std::endl;
+        outputFile << std::endl;
+    }
+
+    outputFile.close();
+}
+
 int main() {
     std::string filename = "player_data.txt";
-
     WeightGenerator weightGenerator;
+
+    // Load cached weights
     weightGenerator.loadCache("weight_cache.txt");
 
     // Clear the results file at the beginning
@@ -20,81 +87,25 @@ int main() {
     clearFile.close();
 
     try {
+        // Parse player data
         std::vector<Player> players = parsePlayerData(filename);
         std::vector<std::vector<double>> trainingData;
 
         // Prepare training data
-        for (Player& player : players) {
-            std::vector<Date> arrayN1, arrayN2, arrayN3;
-            splitDateArrays(player.getBadgeDates(), arrayN1, arrayN2, arrayN3);
-
-            int sizeofArrayN1 = arrayN1.size();
-            int sizeofArrayN2 = arrayN2.size();
-            int sizeofArrayN3 = arrayN3.size();
-
-            std::vector<double> features = {
-                static_cast<double>(player.getNumBadges()),
-                static_cast<double>(sizeofArrayN1),
-                static_cast<double>(sizeofArrayN2),
-                static_cast<double>(sizeofArrayN3)
-            };
-
-            // Add features and actual rank to training data
-            features.push_back(static_cast<double>(player.getActualRank()));
-            trainingData.push_back(features);
-        }
+        prepareTrainingData(players, trainingData);
 
         // Train the weight generator with the prepared training data
         weightGenerator.train(trainingData);
 
         // Predict and update BWS rank for each player
-        for (Player& player : players) {
-            std::vector<Date> arrayN1, arrayN2, arrayN3;
-            splitDateArrays(player.getBadgeDates(), arrayN1, arrayN2, arrayN3);
-
-            int sizeofArrayN1 = arrayN1.size();
-            int sizeofArrayN2 = arrayN2.size();
-            int sizeofArrayN3 = arrayN3.size();
-
-            std::vector<double> features = {
-                static_cast<double>(player.getNumBadges()),
-                static_cast<double>(sizeofArrayN1),
-                static_cast<double>(sizeofArrayN2),
-                static_cast<double>(sizeofArrayN3)
-            };
-
-            // Get dynamic weights using the predict method
-            std::vector<double> dynamicWeights = weightGenerator.predict(player.getUsername(), features);
-
-            // Calculate BWS rank with dynamic weights
-            double bwsRank = calculateBWSrankWithDynamicWeights(
-                player.getActualRank(),
-                player.getNumBadges(),
-                sizeofArrayN1,
-                sizeofArrayN2,
-                sizeofArrayN3,
-                dynamicWeights
-            );
-
-            player.setBWSRank(bwsRank);
-            weightGenerator.addToCache(player.getUsername(), dynamicWeights);
-        }
+        updatePlayerBWSRank(players, weightGenerator);
 
         // Write results to the output file
-        std::ofstream outputFile("results.txt", std::ios::app);
-        if (!outputFile.is_open()) {
-            throw std::runtime_error("Unable to open results file");
-        }
+        writeResults(players);
 
-        for (const auto& player : players) {
-            outputFile << "Username: " << player.getUsername() << std::endl;
-            outputFile << "New BWS Rank: " << player.getBWSRank() << std::endl;
-            outputFile << std::endl;
-        }
         std::cout << "Data Parsed! Have fun screening =)" << std::endl;
-        outputFile.close();
 
-        // Save the updated cache and log entries
+        // Save the updated cache
         weightGenerator.saveCache("weight_cache.txt");
 
     } catch (const std::exception& e) {
