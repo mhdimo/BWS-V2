@@ -2,11 +2,11 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <cmath>
 #include <random>
+#include <cmath>
 
 WeightGenerator::WeightGenerator() {
-    // Initialize weights with random values
+    // Initialize weights with random values between -1.0 and 1.0
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(-1.0, 1.0);
@@ -15,41 +15,32 @@ WeightGenerator::WeightGenerator() {
 }
 
 void WeightGenerator::train(const std::vector<std::vector<double>>& data) {
-    // Simple training algorithm (e.g., linear regression)
     double learningRate = 0.01;
+    
+    // Process each sample in the training data
     for (const auto& sample : data) {
         std::vector<double> inputs = sample;
         double target = inputs.back();
-        inputs.pop_back(); // Remove the target from inputs
+        inputs.pop_back(); // Remove target from inputs
 
-        // Forward pass
-        double output = 0.0;
-        for (size_t i = 0; i < weights.size(); ++i) {
-            output += inputs[i] * weights[i];
-        }
+        updateWeights(inputs, target, learningRate);
+    }
+}
 
-        // Calculate error
-        double error = target - output;
-
-        // Adjust weights
-        for (size_t i = 0; i < weights.size(); ++i) {
-            weights[i] += learningRate * error * inputs[i];
-        }
-
-        // Debug: Print updated weights after each sample
-        std::cout << "Updated Weights after sample: ";
-        for (const auto& weight : weights) {
-            std::cout << weight << " ";
-        }
-        std::cout << std::endl;
+void WeightGenerator::updateWeights(const std::vector<double>& inputs, double target, double learningRate) {
+    // Forward pass
+    double output = 0.0;
+    for (size_t i = 0; i < weights.size(); ++i) {
+        output += inputs[i] * weights[i];
     }
 
-    // Debug: Print final updated weights
-    std::cout << "Final Updated Weights: ";
-    for (const auto& weight : weights) {
-        std::cout << weight << " ";
+    // Calculate error
+    double error = target - output;
+
+    // Adjust weights
+    for (size_t i = 0; i < weights.size(); ++i) {
+        weights[i] += learningRate * error * inputs[i];
     }
-    std::cout << std::endl;
 }
 
 std::vector<double> WeightGenerator::predict(const std::string& key, const std::vector<double>& features) {
@@ -60,8 +51,8 @@ std::vector<double> WeightGenerator::predict(const std::string& key, const std::
     }
 
     // If not cached, calculate new weights
-    std::vector<double> predictedWeights(3);
-    for (size_t i = 0; i < predictedWeights.size(); ++i) {
+    std::vector<double> predictedWeights(weights.size());
+    for (size_t i = 0; i < weights.size(); ++i) {
         predictedWeights[i] = features[i] * weights[i];
     }
 
@@ -70,7 +61,7 @@ std::vector<double> WeightGenerator::predict(const std::string& key, const std::
     return predictedWeights;
 }
 
-void WeightGenerator::saveCache(const std::string& filename) {
+void WeightGenerator::saveCache(const std::string& filename) const {
     std::ofstream file(filename); // Open in write mode to overwrite existing cache
     if (!file.is_open()) {
         std::cerr << "Error: Unable to open cache file for writing: " << filename << std::endl;
@@ -84,8 +75,6 @@ void WeightGenerator::saveCache(const std::string& filename) {
         }
         file << std::endl;
     }
-
-    file.close();
 }
 
 void WeightGenerator::loadCache(const std::string& filename) {
@@ -106,8 +95,6 @@ void WeightGenerator::loadCache(const std::string& filename) {
         }
         cache[key] = weights;
     }
-
-    file.close();
 }
 
 void WeightGenerator::addToCache(const std::string& key, const std::vector<double>& weightsVec) {
