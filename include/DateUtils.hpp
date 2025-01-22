@@ -11,13 +11,16 @@
  * @param arrayN2 The vector to store dates within 6 to 12 months difference.
  * @param arrayN3 The vector to store dates with more than 12 months difference.
  */
-void splitDateArrays(const std::vector<Date>& allDates, std::vector<Date>& arrayN1, std::vector<Date>& arrayN2, std::vector<Date>& arrayN3);
+void splitDateArrays(const std::vector<Date>& allDates, 
+                     std::vector<Date>& arrayN1, 
+                     std::vector<Date>& arrayN2, 
+                     std::vector<Date>& arrayN3) noexcept;
 
 /**
  * @brief Gets the current date.
  * @return A Date object representing the current date.
  */
-Date getCurrentDate();
+Date getCurrentDate() noexcept;
 
 /**
  * @brief Calculates the difference in months between two dates.
@@ -25,6 +28,6 @@ Date getCurrentDate();
  * @param date2 The second date.
  * @return The difference in months between the two dates.
  */
-int calculateMonthsDifference(const Date& date1, const Date& date2);
+int calculateMonthsDifference(const Date& date1, const Date& date2) noexcept;
 
 #endif // DATEUTILS_HPP
