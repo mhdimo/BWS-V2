@@ -1,8 +1,7 @@
 #ifndef PARSER_HPP
 #define PARSER_HPP
 
-#include <vector>
-#include <string>
+#include "common.h"
 #include "Player.hpp"
 #include "Date.hpp"
 
