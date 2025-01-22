@@ -6,22 +6,21 @@
 #include <random>
 
 WeightGenerator::WeightGenerator() {
-    // Initialize weights and cache
+    // Initialize weights with random values
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dis(-1.0, 1.0);
 
-    // Initialize weights with random values
     weights = {dis(gen), dis(gen), dis(gen)};
 }
 
 void WeightGenerator::train(const std::vector<std::vector<double>>& data) {
-    // Implement a simple training algorithm for the neural network
+    // Simple training algorithm (e.g., linear regression)
     double learningRate = 0.01;
     for (const auto& sample : data) {
         std::vector<double> inputs = sample;
-        inputs.pop_back(); // Remove the last element which is the target value
-        double target = sample.back();
+        double target = inputs.back();
+        inputs.pop_back(); // Remove the target from inputs
 
         // Forward pass
         double output = 0.0;
@@ -32,43 +31,56 @@ void WeightGenerator::train(const std::vector<std::vector<double>>& data) {
         // Calculate error
         double error = target - output;
 
-        // Backpropagation
+        // Adjust weights
         for (size_t i = 0; i < weights.size(); ++i) {
             weights[i] += learningRate * error * inputs[i];
         }
+
+        // Debug: Print updated weights after each sample
+        std::cout << "Updated Weights after sample: ";
+        for (const auto& weight : weights) {
+            std::cout << weight << " ";
+        }
+        std::cout << std::endl;
     }
+
+    // Debug: Print final updated weights
+    std::cout << "Final Updated Weights: ";
+    for (const auto& weight : weights) {
+        std::cout << weight << " ";
+    }
+    std::cout << std::endl;
 }
 
-std::vector<double> WeightGenerator::predict(const std::vector<double>& features) {
-    // Implement a simple neural network prediction algorithm
+std::vector<double> WeightGenerator::predict(const std::string& key, const std::vector<double>& features) {
+    // Check if weights for this key are already in the cache
+    auto it = cache.find(key);
+    if (it != cache.end()) {
+        return it->second;
+    }
+
+    // If not cached, calculate new weights
     std::vector<double> predictedWeights(3);
-    // Example prediction logic
     for (size_t i = 0; i < predictedWeights.size(); ++i) {
-        predictedWeights[i] = features[i] * weights[i]; // Dummy logic
+        predictedWeights[i] = features[i] * weights[i];
     }
 
-    // Populate the cache with the predicted weights
-    std::ostringstream keyStream;
-    for (const auto& feature : features) {
-        keyStream << feature << "_";
-    }
-    std::string key = keyStream.str();
+    // Add the new weights to the cache
     cache[key] = predictedWeights;
-
     return predictedWeights;
 }
 
 void WeightGenerator::saveCache(const std::string& filename) {
-    std::ofstream file(filename);
+    std::ofstream file(filename); // Open in write mode to overwrite existing cache
     if (!file.is_open()) {
         std::cerr << "Error: Unable to open cache file for writing: " << filename << std::endl;
         return;
     }
 
     for (const auto& entry : cache) {
-        file << entry.first << " ";
+        file << entry.first;
         for (const auto& weight : entry.second) {
-            file << weight << " ";
+            file << " " << weight;
         }
         file << std::endl;
     }
@@ -79,7 +91,7 @@ void WeightGenerator::saveCache(const std::string& filename) {
 void WeightGenerator::loadCache(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
-        std::cerr << "Error: Unable to open cache file for reading: " << filename << "...Creating one..." <<std::endl;
+        std::cerr << "Error: Unable to open cache file for reading: " << filename << "...Creating one..." << std::endl;
         return;
     }
 
@@ -96,4 +108,12 @@ void WeightGenerator::loadCache(const std::string& filename) {
     }
 
     file.close();
+}
+
+void WeightGenerator::addToCache(const std::string& key, const std::vector<double>& weightsVec) {
+    cache[key] = weightsVec;
+}
+
+const std::unordered_map<std::string, std::vector<double>>& WeightGenerator::getCache() const {
+    return cache;
 }
