@@ -45,8 +45,6 @@ BWS-V2/
 
 ### Prerequisites
 - C++ compiler (e.g., g++)
-- CMake (optional, for building the project)
-- Google Test (for running unit tests)
 
 ### Building the Project
 To build the project, navigate to the `src` directory and compile the source files:
