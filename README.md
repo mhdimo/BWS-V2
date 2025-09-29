@@ -1,4 +1,6 @@
 # BWS-V2
+> [!WARNING]
+> This project is not anymore maintained, feel free to fork and improve it.
 
 ## Overview
 BWS-V2 is a C++ application designed to calculate and predict player rankings based on their performance and how old is their badge. The application uses a neural network to dynamically generate weight predictions and store them in a cache for efficient data processing.
